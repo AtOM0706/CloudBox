@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6f7f9"/>
+      <stop offset="50%" stop-color="#eceef2"/>
+      <stop offset="100%" stop-color="#e2e5ea"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="80"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#base)"/>
+
+  <!-- monochrome grey blobs: lightness variation gives the glass something to
+       refract while staying a single, neutral colour family -->
+  <g filter="url(#soft)" opacity="0.9">
+    <circle cx="240" cy="200" r="260" fill="#ffffff"/>
+    <circle cx="1380" cy="170" r="280" fill="#d6dae1"/>
+    <circle cx="1280" cy="820" r="320" fill="#fbfcfd"/>
+    <circle cx="320" cy="860" r="300" fill="#d2d6dd"/>
+    <circle cx="820" cy="500" r="260" fill="#e6e9ee"/>
+    <circle cx="760" cy="120" r="200" fill="#cfd3da"/>
+  </g>
+</svg>

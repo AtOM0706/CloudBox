@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: cloudbox
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/cloudbox}
+    username: ${SPRING_DATASOURCE_USERNAME:cloudbox}
+    password: ${SPRING_DATASOURCE_PASSWORD:cloudbox_dev_password}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # schema is owned by Flyway, never by Hibernate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+server:
+  port: 8080
+
+# Object storage (MinIO / S3) — consumed in M3
+storage:
+  endpoint: ${STORAGE_ENDPOINT:http://localhost:9000}
+  # Browser-reachable endpoint for presigned preview/download URLs
+  public-endpoint: ${STORAGE_PUBLIC_ENDPOINT:http://localhost:9000}
+  access-key: ${STORAGE_ACCESS_KEY:minioadmin}
+  secret-key: ${STORAGE_SECRET_KEY:minioadmin}
+  bucket: ${STORAGE_BUCKET:cloudbox-files}
+  region: ${STORAGE_REGION:us-east-1}
+  quota-bytes: ${STORAGE_QUOTA_BYTES:1073741824}
+
+# JWT — consumed in M2
+jwt:
+  secret: ${JWT_SECRET:ZmFrZS1kZXYtc2VjcmV0LWNoYW5nZS1tZS1wbGVhc2UtMTIzNDU2Nzg5MA==}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+# Where the OAuth2 success handler sends the browser (with ?token=JWT)
+app:
+  oauth2:
+    success-redirect: ${OAUTH_SUCCESS_REDIRECT:http://localhost:3000/oauth/callback}
+
+# Google OAuth credentials. Blank ⇒ Google sign-in stays disabled (app runs normally).
+google:
+  client-id: ${GOOGLE_CLIENT_ID:}
+  client-secret: ${GOOGLE_CLIENT_SECRET:}
+
+# Expose only health/info publicly
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs

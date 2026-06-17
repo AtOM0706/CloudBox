@@ -1,0 +1,266 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  /* Liquid Glass material tokens — neutral grayscale, flattened highlight */
+  --lg-tint: rgba(255, 255, 255, 0.28);
+  --lg-tint-strong: rgba(255, 255, 255, 0.42);
+  --lg-tint-card: rgba(255, 255, 255, 0.22);
+  --lg-highlight: rgba(255, 255, 255, 0.45);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: theme("fontFamily.sans");
+  color: #1c1c1e;
+  /* Monochromatic neutral backdrop (single-hue gradient, no colored wallpaper). */
+  background-color: #e7e9ed;
+  background-image: radial-gradient(125% 125% at 50% 0%, #f4f5f7 0%, #e4e6ea 58%, #d9dbe1 100%);
+  background-attachment: fixed;
+}
+
+@layer components {
+  /* ---- iOS "Liquid Glass" material (layered) ----
+     Each surface is a transparent box with two pseudo-layers:
+       ::before = backdrop blur + SVG lens refraction (#lensFilter)
+       ::after  = translucent tint + bright specular highlight edge
+     Content is lifted above both. The element keeps a soft outer float shadow. */
+  .glass,
+  .glass-strong,
+  .card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: transparent;
+  }
+  .glass::before,
+  .glass-strong::before,
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    backdrop-filter: blur(10px) saturate(180%) brightness(1.05);
+    -webkit-backdrop-filter: blur(10px) saturate(180%) brightness(1.05);
+    filter: url(#lensFilter);
+  }
+  .glass::after,
+  .glass-strong::after,
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    background: var(--lg-tint);
+    /* Flat surface: just a faint top edge + hairline border, no glossy glow. */
+    box-shadow:
+      inset 0 1px 0 var(--lg-highlight),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+  }
+  /* keep real content above the two glass layers */
+  .glass > *,
+  .glass-strong > *,
+  .card > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .glass {
+    box-shadow: 0 10px 30px rgba(17, 24, 39, 0.12);
+  }
+  .glass-strong {
+    box-shadow: 0 18px 50px rgba(17, 24, 39, 0.16);
+  }
+  .glass-strong::after {
+    background: var(--lg-tint-strong);
+  }
+  .card {
+    box-shadow: 0 6px 20px rgba(17, 24, 39, 0.1);
+  }
+  .card::after {
+    background: var(--lg-tint-card);
+  }
+
+  .glass-hover {
+    @apply transition-all duration-200;
+  }
+  .glass-hover:hover::after {
+    background: rgba(255, 255, 255, 0.42);
+  }
+  .glass-hover:hover {
+    box-shadow: 0 16px 44px rgba(17, 24, 39, 0.16);
+  }
+
+  .card-hover {
+    @apply transition-all duration-200;
+  }
+  .card-hover:hover::after {
+    background: rgba(255, 255, 255, 0.34);
+  }
+  .card-hover:hover {
+    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.14);
+    transform: translateY(-2px);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2
+           text-sm font-medium transition-all duration-150 active:scale-[0.97]
+           disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand text-white shadow-md hover:bg-brand-700;
+  }
+  .btn-ghost {
+    @apply btn text-slate-700 hover:bg-white/60;
+  }
+  /* Simple translucent button — NOT the layered .glass, so the text label
+     (a bare text node) is never covered by a glass overlay layer. */
+  .btn-glass {
+    @apply btn text-slate-700;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px) saturate(160%);
+    -webkit-backdrop-filter: blur(8px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75),
+      0 2px 8px rgba(17, 24, 39, 0.08);
+  }
+  .btn-glass:hover {
+    background: rgba(255, 255, 255, 0.78);
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-black/5 bg-white/70 px-4 py-2.5
+           text-sm text-slate-800 outline-none backdrop-blur-md
+           placeholder:text-slate-400 focus:border-brand/40 focus:ring-2 focus:ring-brand/25;
+  }
+  /* Native date control: make the calendar-picker icon match the theme. */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+    cursor: pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 0.9;
+  }
+}
+
+/* ============ Dark mode ============
+   Plain (unlayered) rules so they override the @layer components styles.
+   The glass ::after tint reads from --lg-* vars, so redefining them re-themes
+   every glass surface automatically. */
+.dark {
+  color-scheme: dark;
+  /* Neutral grayscale tints (equal RGB, no blue cast) + very subtle edge highlight. */
+  --lg-tint: rgba(38, 38, 40, 0.62);
+  --lg-tint-strong: rgba(30, 30, 32, 0.72);
+  --lg-tint-card: rgba(44, 44, 46, 0.58);
+  --lg-highlight: rgba(255, 255, 255, 0.07);
+}
+.dark body {
+  background-color: #0f1115;
+  background-image: radial-gradient(125% 125% at 50% 0%, #1d2027 0%, #15171c 55%, #0f1115 100%);
+  background-attachment: fixed;
+  color: #e6e8ee;
+}
+.dark .glass {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.42);
+}
+.dark .glass-strong {
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.52);
+}
+.dark .card {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.38);
+}
+.dark .glass-hover:hover::after {
+  background: rgba(58, 58, 60, 0.62);
+}
+.dark .card-hover:hover::after {
+  background: rgba(54, 54, 56, 0.62);
+}
+
+.dark .btn-ghost {
+  @apply text-slate-200;
+}
+.dark .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.dark .btn-glass {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.dark .btn-glass:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.dark .input {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.dark .input::placeholder {
+  color: #94a3b8;
+}
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.65;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Reduced transparency fallback — keep panels readable on low-end devices */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong,
+  .card {
+    background: rgba(255, 255, 255, 0.95) !important;
+  }
+  .glass::before,
+  .glass-strong::before,
+  .card::before {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
+  .glass::after,
+  .glass-strong::after,
+  .card::after {
+    background: transparent !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Slim scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+  background-clip: content-box;
+}

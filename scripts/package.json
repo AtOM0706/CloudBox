@@ -1,0 +1,1 @@
+{"name":"cloudbox-capture","private":true,"type":"module","dependencies":{"gifenc":"^1.0.3","playwright-core":"^1.61.0","pngjs":"^7.0.0"}}

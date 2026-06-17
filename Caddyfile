@@ -1,0 +1,8 @@
+# Caddy reverse proxy for CloudBox.
+# Set DOMAIN in .env. With a real domain, Caddy auto-provisions HTTPS via
+# Let's Encrypt. With DOMAIN=localhost it serves plain HTTP for local testing.
+
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy frontend:80
+}

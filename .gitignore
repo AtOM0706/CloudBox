@@ -1,0 +1,44 @@
+# ---- Java / Maven ----
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+hs_err_pid*
+
+# ---- Node / React ----
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# ---- Env & secrets ----
+.env
+.env.*
+!.env.example
+
+# ---- IDE ----
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Docker volumes (if bind-mounted locally) ----
+data/
+minio-data/
+postgres-data/
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Local notes & editor config (not published) ----
+CLAUDE.md
+.claude/
+.cursor/
+scripts/node_modules/
