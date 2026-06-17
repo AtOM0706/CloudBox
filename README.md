@@ -21,7 +21,6 @@ S3-compatible object storage (MinIO). The whole stack runs with one command.
 - 👁️ **Preview** — images, PDFs, and text via short-lived presigned URLs
 - 📦 **Storage quota** per user with a live usage meter
 - 🧰 **Bulk actions**, recent files, list & grid views
-- 🎨 **Glassmorphism UI** — light & dark themes, iOS-style frosted glass, drag-a-file-onto-a-folder to move, responsive
 
 ## 📸 Screenshots
 
